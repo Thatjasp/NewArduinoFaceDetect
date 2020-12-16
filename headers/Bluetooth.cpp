@@ -8,12 +8,12 @@
 		Guid guid;
 	public:
 		BLServer(Guid& guid){
-			std::future<GattServiceProviderResult> res = std::async(GatServiceProvider.CreateAsync,guid);
+			std::future<GattServiceProviderResult> res = std::async(GatServiceProvider.CreateAsync,guid); //Not going to be needed
 			GattServiceProviderResult result = res.get();
 			if (Result.Error == BluetoothError.Sucess) {
 				this->ServiceProvider = result.ServiceProvider;
 			} else {
-				std::cerr << "Guid Not Found \n"'
+				std::cerr << "Guid Not Found \n"
 				return -1;
 			}
 		}

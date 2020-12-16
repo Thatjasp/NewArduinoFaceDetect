@@ -10,7 +10,6 @@ add_executable(CVTesting main.cpp
                 headers/CameraDetect.hpp)
 target_compile_features(CVTesting PUBLIC cxx_std_17)
 set(CMAKE_CXX_STANDARD 17)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMMON_LANGUAGE_RUNTIME "")
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

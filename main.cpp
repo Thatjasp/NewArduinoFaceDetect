@@ -4,7 +4,6 @@
 using cv::VideoCapture;
 
 int main(int argc, char** argv) {
-	System::Guid guid("11111111-2222-3333-4455-555555555555");
 	std::string path = argv[0];
 	std::string facePath = path + 
 		 "//data//haarcascade_frontalface_default.xml";
