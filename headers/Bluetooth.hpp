@@ -12,11 +12,12 @@ using namespace winrt::Windows::Devices::Bluetooth::GenericAttributeProfile;
 	private:
 		 ServiceProvider server;
 		 Guid guid;
+		 GattLocalCharacteristic notifyChar;
+		 void SubscribedClientsChanged(GattLocalCharacteristic& sender, winrt::Windows::Foundation::IInspectable& args);
 
 	public:
 		BLServer(Guid& guid);
-		bool isNotifiable(Guid& guid, ServiceProvider& serviceProvider);
-		bool notifyBT(ostream& inputStream);
+		void notifyValue(uint8_t& x, uint8_t& y)
 	};	
 
 	
