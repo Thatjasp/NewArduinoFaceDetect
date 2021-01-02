@@ -14,5 +14,5 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
 
-include_directories(${OpenCV_INCLUDE_DIRS})
+
 target_link_libraries(CVTesting ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT})
