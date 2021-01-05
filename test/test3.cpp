@@ -17,6 +17,7 @@ using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattCommunica
 using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattDeviceService;
 using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattDeviceServicesResult;
 using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattSession;
+using winrt::Windows::Devices::Bluetooth::BluetoothCacheMode;
 using winrt::Windows::Storage::Streams::DataWriter;
 void scanForDevice();
 int main()
@@ -24,7 +25,7 @@ int main()
     UINT64 bleAddy = 0xd58d10fc1f39;
     auto awaitBluetooth = BluetoothLEDevice::FromBluetoothAddressAsync(bleAddy);
     BluetoothLEDevice nRF = awaitBluetooth.get();
-    scanForDevice();
+    // scanForDevice();
     // auto awaitSes = GattSession::FromDeviceIdAsync(nRF.BluetoothDeviceId());
     // GattSession ses = awaitSes.get();
     // ses.MaintainConnection(true);
@@ -33,7 +34,7 @@ int main()
     //     return -1;
     // }
 
-    auto resultAwait = nRF.GetGattServicesAsync();
+    auto resultAwait = nRF.GetGattServicesAsync(BluetoothCacheMode::Uncached);
     GattDeviceServicesResult result = resultAwait.get();
 
     if (result.Status() == GattCommunicationStatus::Success)
@@ -51,7 +52,7 @@ int main()
             }
             std::cout << std::endl;
 
-            auto propAwait = services.GetAt(i).GetCharacteristicsAsync();
+            auto propAwait = services.GetAt(i).GetCharacteristicsAsync(BluetoothCacheMode::Uncached);
             GattCharacteristicsResult resultChar = propAwait.get();
             if (resultChar.Status() == GattCommunicationStatus::Success)
             {
@@ -77,9 +78,11 @@ int main()
                 std::cerr << "Gatt Services Was not able to be created" << std::endl;
                 return -1;
             }
+            services.GetAt(i).Close();
         }
     }
     std::cout << "end" << std::endl;
+    nRF.Close();
     return 0;
 }
 void OnAdverReceived(BluetoothLEAdvertisementWatcher watcher, BluetoothLEAdvertisementReceivedEventArgs eventArgs)
@@ -105,4 +108,5 @@ void scanForDevice()
     watch.Received(&OnAdverReceived);
     watch.Start();
     Sleep(10000);
+    watch.Stop();
 }
