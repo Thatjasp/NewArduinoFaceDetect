@@ -18,6 +18,7 @@ using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattDeviceSer
 using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattDeviceServicesResult;
 using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattSession;
 using winrt::Windows::Storage::Streams::DataWriter;
+using winrt::Windows::Devices::Bluetooth::BluetoothCacheMode;
 void scanForDevice();
 int main()
 {
@@ -25,17 +26,17 @@ int main()
     auto awaitBluetooth = BluetoothLEDevice::FromBluetoothAddressAsync(bleAddy);
     BluetoothLEDevice nRF = awaitBluetooth.get();
     scanForDevice();
-    // auto awaitSes = GattSession::FromDeviceIdAsync(nRF.BluetoothDeviceId());
-    // GattSession ses = awaitSes.get();
-    // ses.MaintainConnection(true);
-    // if(nRF.ConnectionStatus() == BluetoothConnectionStatus::Disconnected){
-    //     std::cerr << "Connection not established" << std::endl;
-    //     return -1;
-    // }
 
-    auto resultAwait = nRF.GetGattServicesAsync();
+    auto resultAwait = nRF.GetGattServicesAsync(BluetoothCacheMode::Uncached);
     GattDeviceServicesResult result = resultAwait.get();
 
+    if (result.Status() == GattCommunicationStatus::Unreachable){
+        awaitBluetooth = BluetoothLEDevice::FromIdAsync(nRF.DeviceId());
+        nRF = awaitBluetooth.get();
+        resultAwait = nRF.GetGattServicesAsync(BluetoothCacheMode::Uncached);
+        result = resultAwait.get();
+    }
+    
     if (result.Status() == GattCommunicationStatus::Success)
     {
         auto services = result.Services();
@@ -80,6 +81,12 @@ int main()
         }
     }
     std::cout << "end" << std::endl;
+    
+    nRF.Close();
+    for (int i = 0; i < result.Services().Size(); i++){
+        result.Services().GetAt(i).Close();
+    }
+    
     return 0;
 }
 void OnAdverReceived(BluetoothLEAdvertisementWatcher watcher, BluetoothLEAdvertisementReceivedEventArgs eventArgs)

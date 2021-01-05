@@ -20,6 +20,7 @@ using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattDeviceSer
 using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattSession;
 using winrt::Windows::Storage::Streams::DataWriter;
 using winrt::Windows::Devices::Bluetooth::GenericAttributeProfile::GattWriteOption;
+using winrt::Windows::Devices::Bluetooth::BluetoothCacheMode;
 void scanForDevice();
 
 int main(){
@@ -33,17 +34,17 @@ void OnAdverReceived(BluetoothLEAdvertisementWatcher watcher, BluetoothLEAdverti
 {
     if ((uint64_t)0xd58d10fc1f39 == eventArgs.BluetoothAddress())
     {
-        // std::cout << eventArgs.Advertisement().ServiceUuids().Size() << std::endl;
         auto awaitBluetooth = BluetoothLEDevice::FromBluetoothAddressAsync((uint64_t)0xd58d10fc1f39);
         BluetoothLEDevice nRF = awaitBluetooth.get();
+        auto waiting = nRF.GetGattServicesAsync(BluetoothCacheMode::Uncached);
+        auto result = waiting.get();
+    
+        std::cout << result.Services().Size() << std::endl;
 
-        // auto waiting = nRF.GetGattServicesAsync();
-        // auto result = waiting.get();
         std::array<uint8_t,8> ar = {17,17,17,17,17,17,17,17};
         std::array<uint8_t,8> ar2 = {34,34,34,34,34,34,34,34};
 
         winrt::guid Guid((uint32_t) 0x111111111,(uint16_t)0x1111,(uint16_t)0x1111,ar);
-
         winrt::guid charGuid((uint32_t)0x22222222,(uint16_t)0x2222,(uint16_t)0x2222,ar2);
 
         auto bruh = nRF.GetGattServicesForUuidAsync(Guid);
@@ -51,12 +52,12 @@ void OnAdverReceived(BluetoothLEAdvertisementWatcher watcher, BluetoothLEAdverti
         auto services = d.Services();
         std::cout << "Service Size: " << services.Size() << std::endl;
         std::cout << "Char Size: " << services.GetAt(0).GetCharacteristicsForUuidAsync(charGuid).get().Characteristics().Size() << std::endl;
-        DataWriter f;
-        f.WriteInt16(-102);
-        auto b = services.GetAt(0).GetCharacteristicsForUuidAsync(charGuid).get().Characteristics().GetAt(0).WriteValueAsync(f.DetachBuffer());
+        // DataWriter f;
+        // f.WriteInt16(102);
+        // auto b = services.GetAt(0).GetCharacteristicsForUuidAsync(charGuid).get().Characteristics().GetAt(0).WriteValueAsync(f.DetachBuffer());
 
-        auto re = services.GetAt(0).GetCharacteristicsForUuidAsync(charGuid).get().Characteristics().GetAt(0).CharacteristicProperties();
-        std::cout << (int)re << std::endl;
+        // auto re = services.GetAt(0).GetCharacteristicsForUuidAsync(charGuid).get().Characteristics().GetAt(0).CharacteristicProperties();
+        // std::cout << (int)re << std::endl;
     }
     
     return;
@@ -67,5 +68,6 @@ void scanForDevice()
     BluetoothLEAdvertisementWatcher watch;
     watch.Received(&OnAdverReceived);
     watch.Start();
-    Sleep(60000);
+    Sleep(9000);
+    watch.Stop();
 }
