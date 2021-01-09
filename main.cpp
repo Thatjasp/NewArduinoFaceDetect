@@ -1,7 +1,7 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include "headers/CameraDetect.hpp"
-#include <headers/Bluetooth.hpp>
+#include "include/CameraDetect.hpp"
+#include "include/Bluetooth.hpp"
 using cv::VideoCapture;
 
 int main(int argc, char** argv) {

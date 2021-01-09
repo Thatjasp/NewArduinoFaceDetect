@@ -4,6 +4,7 @@
 #include<vector>
 #include <opencv2/objdetect.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 
 using cv::Mat;
 using cv::rectangle;
@@ -11,13 +12,14 @@ using rectVec = std::vector<cv::Rect>;
 using Rect = cv::Rect;
 using Point = cv::Point;
 using cv::CascadeClassifier;
+using cv::Scalar;
 
-void display(Rect& x, Point& point); 
+void display(Mat& frame); 
 
-Point detect(Mat& frame,CascadeClassifier& topLayer,
+Mat detect(Mat& frame,CascadeClassifier& topLayer,
 					CascadeClassifier& bottomLayer);
 
-Rect cascadeDetect(rectVec& top, CascadeClassifier& cascade);
+Rect cascadeDetect(Mat& copyFrame, CascadeClassifier& cascade);
 
 
 
