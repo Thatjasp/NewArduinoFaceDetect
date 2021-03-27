@@ -72,10 +72,8 @@
 				auto awaitBluetooth = BluetoothLEDevice::FromBluetoothAddressAsync(BluetoothAddress);
 				BluetoothLEDevice device = awaitBluetooth.get();
 				this->device = device;
-				auto awaitChar = gattService.GetGattCharacteristicsForUuidAsync(charGuid,BluetoothCacheMode::Uncached);
-				auto charList = awaitChar.get().Characteristics();
-				GattCharacteristics characteristic = charList.GetAt(0);
-				charVec.push_back(characteristics);
+				addLocalChar(charGuid);
+				
 			}
 			BLEClient(uint64_t& Bluetooth,guid& serviceGuid){
 				auto awaitBlutooth = BluetoothLEDevice::FromBLuetoothAddressAsync(Bluetooth);
@@ -108,5 +106,11 @@
 			}
 			size_t addLocalChar(GattLocalCharacteristic characteristic){
 				charList.push_back(characteristic);
+			}
+			size_t addLocalChar(winrt::guid charGuid) {
+				auto awaitChar = gattService.GetGattCharacteristicsForUuidAsync(charGuid,BluetoothCacheMode::Uncached);
+				auto charList = awaitChar.get().Characteristics();
+				GattCharacteristics characteristic = charList.GetAt(0);
+				charVec.push_back(characteristics);
 			}
 	};

@@ -1,9 +1,8 @@
 #include "CameraDetect.hpp"
-
-
+#include "Bluetooth.hpp"
+// need a class that has bluetooth
 void display(Mat& frame){
 	cv::imshow();
-
 }
 
 Mat detect(Mat& frame, CascadeClassifier& topLayer,

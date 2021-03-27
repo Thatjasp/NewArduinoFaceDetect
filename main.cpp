@@ -17,6 +17,16 @@ int main(int argc, char** argv) {
 			<< std::endl;
 		return -1;
 	}
+	std::array<uint8_t,8> ar = {17,17,17,17,17,17,17,17};
+	std::array<uint8_t,8> ar2 = {34,34,34,34,34,34,34,34};
+
+	winrt::guid serviceGuid((uint32_t) 0x111111111,(uint16_t)0x1111,
+			(uint16_t)0x1111,ar);
+	winrt::guid charXGuid((uint32_t)0x22222222,(uint16_t)0x2222,
+			(uint16_t)0x2222,ar2);
+	winrt::guid charYGuid((uint32_t)0x111111111,(uint16_t)0x1111,(uint16_t)0x1111,ar2);
+	BLEClient controller((uint64_t)0xd58d10fc1f39,serviceGuid,charXGuid);
+	controller.addLocalChar(charYGuid);
 	Mat frame;
 	VideoCapture cap;
 	cap.open(0);
@@ -27,14 +37,11 @@ int main(int argc, char** argv) {
 	}
 	while(cv::waitKey() == -1) {
 		cap >> frame;
-		// detect(frame,face,eyes);
+		frame = detect(frame,face,eyes);
+		display(frame);
 	}
 	
 	return 0;
 }
-winrt::guid createGuid(){
-	winrt::guid guid;
 
-	return guid;
-}
 
